@@ -1,0 +1,21 @@
+services:
+  # PostgreSQL: localhost:5432 (só no host, não exposto na rede)
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # No Postgres 18+ o volume vai em /var/lib/postgresql (o PGDATA fica em 18/docker dentro dele)
+      - pgdata:/var/lib/postgresql
+      # Scripts .sql/.sh rodam em ordem alfabética, só na primeira inicialização (volume vazio)
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
