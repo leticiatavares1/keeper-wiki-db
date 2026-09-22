@@ -23,5 +23,7 @@ volumes:
   pgdata:
 
 networks:
-  # O ../keeper-wiki-bkd entra aqui como rede externa. Suba o banco primeiro.
+  # Nome fixo, sem o prefixo do projeto: o ../keeper-wiki-bkd entra aqui como
+  # rede externa e procura literalmente por "keeper-wiki". Suba o banco primeiro.
   keeper-wiki:
+    name: keeper-wiki
